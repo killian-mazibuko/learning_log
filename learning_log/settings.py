@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,17 +79,6 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'learning_log',
-    'USER': 'root',
-    'PASSWORD': 'Python2024',
-    'HOST': 'localhost',
-    'PORT': '3306',
-    }
-}
 
 
 # Password validation
@@ -139,10 +130,12 @@ BOOTSTRAP3 = {
  'include_jquery': True,
 }
 
-if os.getcwd() == '/app':
-    import dj_database_url
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "static/"
+
+if IS_HEROKU_APP:
     DATABASES = {
-    'default': dj_database_url.config(default='postgres://localhost')
+        'default': dj_database_url.config(default='postgres://localhost')
     }
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure().
@@ -152,7 +145,10 @@ if os.getcwd() == '/app':
     ALLOWED_HOSTS = ['*']
     # Static asset configuration
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    STATIC_ROOT = 'staticfiles'
-    STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-    )
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
