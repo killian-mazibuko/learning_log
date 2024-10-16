@@ -133,18 +133,11 @@ BOOTSTRAP3 = {
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
 
-DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'msushop',
-    'USER': 'root',
-    'PASSWORD': 'Python2024',
-    'HOST': 'localhost',
-    'PORT': '3306',
-    }
-}
-
 if IS_HEROKU_APP:
+
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    }
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure().
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -153,3 +146,10 @@ if IS_HEROKU_APP:
     ALLOWED_HOSTS = ['*']
     # Static asset configuration
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
