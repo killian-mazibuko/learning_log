@@ -151,8 +151,12 @@ if IS_HEROKU_APP:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 else:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'learning_log',
+        'USER': 'root',
+        'PASSWORD': 'Python2024',
+        'HOST': 'localhost',
+        'PORT': '3306',
         }
     }
