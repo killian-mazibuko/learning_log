@@ -135,7 +135,12 @@ STATIC_URL = "static/"
 
 if IS_HEROKU_APP:
     DATABASES = {
-        'default': dj_database_url.config(default='postgres://localhost')
+        "default": dj_database_url.config(
+            env="postgres://localhost",
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
     }
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure().
